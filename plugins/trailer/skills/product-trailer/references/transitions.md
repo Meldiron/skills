@@ -25,13 +25,32 @@ A transition is a sentence connector. "And then" is a cut. "Meanwhile" is a push
 | **Parallax drift** | Keep a hold alive | 3-6s, 2-5% travel | linear | `translate` by `noise2D` or linear interpolate |
 | **Flicker / glitch** | Something is broken (the old way) | 100-250ms | step | Only on pain scenes, at most twice per video, never on brand or CTA |
 
+## Zooming UI footage without making it drunk
+
+Scaling a screen recording is the one motion viewers judge harshly, because they know exactly how a UI should sit still. Reviewer wording for getting it wrong: "the zoom in and out on the Console UI is not very smooth, the UI feels a bit drunk". The causes, and the rules that remove them:
+
+- **No noise, no jitter, no spring on footage.** A `noise2D` "drift" or a `springs.soft` settle on the footage transform reads as wobble, not life. Footage gets at most one linear push of 1-2% across the shot. Breathing and drift are for glows and grids.
+- **Long moves, one easing.** A framing change on footage takes at least 40 frames (1.3 s) and uses `Easing.bezier(0.16, 1, 0.3, 1)` (expo out) when arriving on a detail or `Easing.inOut(Easing.cubic)` when travelling between two framings. Never under 30 frames, never `ease.snap` or anything with overshoot.
+- **Scale and position move together.** Interpolate `scale`, `x` and `y` from the same progress value so the motion is one curve, not three.
+- **Scale perceptually.** Pass `output: 'perceptual-scale'` (or interpolate the logarithm of the scale) so a 1 → 1.8 move does not rush at the start and crawl at the end.
+- **Prefer a cut.** If a shot needs two framings, cut between two static framings (or cut to a slide and back) instead of moving. Moving is for the reveal moment only.
+- **One zoom-through per video.** The zoom-through transition is a scale move too; use it once, into the reveal, and nowhere near footage-to-footage cuts.
+
+```ts
+// one smooth move between two framings; frames = how long it takes, from = when it starts
+const p = interpolate(frame, [from, from + frames], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.bezier(0.16, 1, 0.3, 1) })
+const scale = Math.exp(interpolate(p, [0, 1], [Math.log(a.scale), Math.log(b.scale)]))
+const x = a.x + (b.x - a.x) * p, y = a.y + (b.y - a.y) * p
+<AbsoluteFill style={{ scale: `${scale}`, transformOrigin: `${x * 100}% ${y * 100}%` }}>
+```
+
 ## Rules of rhythm
 
 - **Three to four distinct transition types per 60 seconds**, counting the hard cut. More and the viewer notices the editing instead of the product.
 - **Land cuts on beats.** At 120 BPM a beat is 500ms (15 frames at 30fps). Put scene changes on beat 1 or 3 of a bar. Get the BPM and first-downbeat offset of the music and store them in `script.json`; compute `beatFrame(n) = (offset + n * 60 / bpm) * fps`.
 - **Entrances ease out, exits ease in.** Entrances can be 100% of the duration, exits about 75%. Exits are less interesting than arrivals.
 - **One motion at a time.** When a headline is animating, the background is still. When footage is zooming, no text is moving.
-- **Holds are not pauses.** A static frame for more than 2 seconds needs a parallax drift, a cursor move, or a glow shifting slowly.
+- **Holds are not pauses.** A static frame for more than 2 seconds needs a cursor move, a glow shifting slowly, or a linear push. On footage that means the push only; see "Zooming UI footage" above.
 - **Match cuts beat transitions.** If the button the cursor clicks is the same shape as the card in the next scene, align them and cut. The brain fills the rest.
 - **The reveal is the one place for a big move.** Spend the whip pan or the zoom-through there. Everywhere else, cuts and pushes.
 

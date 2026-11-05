@@ -6,6 +6,7 @@ Every note below came from a real review of a trailer made with this skill. Chec
 
 - **Is anything written on top of footage?** A corner label on a shot reads as a caption. Remove it; the voice says what is happening, or a slide between shots does.
 - **Does the camera move inside a shot?** Pans, zoom-ins and zoom-outs within one take were called "too much moving around, hard to follow". One framing per shot, chosen so every element the shot uses stays in view, with a 1-2% slow push at most. Use click rings to direct the eye.
+- **Does the zoom feel smooth, or does the UI look drunk?** Any wobble, jitter or quick scale change on screen footage is noticed instantly. Causes: `noise2D` or a spring on the footage transform, framing moves under 40 frames, cubic easing on a scale change. Fix: static framing with a linear 1-2% push, and for a real move the smooth-zoom recipe in `transitions.md`. A reviewer who says "ask for the zoom to be smoother and nicer" means this.
 - **Is the app big enough?** At 1x in a card the Console is unreadable on a phone. Zoom to 1.3-1.9x; the smallest text should be at least 28px on the 1080p frame.
 - **Do the old way and the new way look alike?** If both show a sign-in form, change the surface of one (full page vs popover, desaturated vs colour).
 - **Are there enough effects to feel anything?** A static grid and three fades were called boring. Drift the grid, breathe the glow, glitch the pain shot once or twice, whip between demo shots, zoom-through into the reveal, ring the clicks.
