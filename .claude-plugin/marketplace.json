@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "meldiron",
+  "description": "Skills by Matej Bačo and colleagues at Appwrite.",
+  "owner": {
+    "name": "Matej Bačo"
+  },
+  "plugins": [
+    {
+      "name": "trailer",
+      "description": "Produce ~60s product feature trailers: story beats, headless-browser recordings against local Appwrite, Remotion composition in Appwrite Console style, music, SFX and transitions.",
+      "author": { "name": "Matej Bačo" },
+      "category": "productivity",
+      "source": "./plugins/trailer",
+      "homepage": "https://github.com/meldiron/skills/tree/main/plugins/trailer",
+      "keywords": ["video", "trailer", "remotion", "playwright", "appwrite", "marketing"]
+    }
+  ]
+}

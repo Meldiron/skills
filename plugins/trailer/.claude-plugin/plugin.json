@@ -1,0 +1,18 @@
+{
+  "name": "trailer",
+  "version": "1.0.0",
+  "description": "Produce ~60s product feature trailers with Remotion, headless-browser recordings and Appwrite Console styling.",
+  "author": {
+    "name": "Matej Ba\u010do"
+  },
+  "homepage": "https://github.com/meldiron/skills/tree/main/plugins/trailer",
+  "repository": "https://github.com/meldiron/skills",
+  "license": "MIT",
+  "keywords": [
+    "video",
+    "trailer",
+    "remotion",
+    "playwright",
+    "appwrite"
+  ]
+}

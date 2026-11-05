@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Trailer script",
+  "description": "Beat sheet for a product trailer. Feed as Remotion defaultProps. All times in seconds.",
+  "type": "object",
+  "required": ["feature", "shape", "theme", "fps", "scenes"],
+  "properties": {
+    "feature": { "type": "string" },
+    "shape": { "enum": ["before-after", "problem-widen", "cold-open", "one-number", "walkthrough"] },
+    "theme": { "enum": ["dark", "light"] },
+    "accent": { "type": "string", "description": "Secondary accent hex, optional. Pink is always primary.", "default": "" },
+    "fps": { "type": "integer", "default": 30 },
+    "music": { "type": "object", "properties": { "file": { "type": "string" }, "bpm": { "type": "number" }, "offset": { "type": "number", "description": "seconds from file start to first downbeat" } } },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "beat", "duration", "layout"],
+        "properties": {
+          "id": { "type": "string" },
+          "beat": { "enum": ["intro", "pain", "reveal", "demo", "payoff", "outro"] },
+          "duration": { "type": "number" },
+          "layout": { "enum": ["logo-sting", "hero-center", "hero-left", "footage-card", "footage-full", "footage-zoom", "split", "code-reveal", "label-footage", "counter", "stack", "end-card"] },
+          "headline": { "type": "string" },
+          "line": { "type": "string" },
+          "label": { "type": "string" },
+          "footage": { "type": "string", "description": "public/ path" },
+          "trimBefore": { "type": "number", "description": "seconds" },
+          "playbackRate": { "type": "number", "default": 1 },
+          "zoom": { "type": "object", "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "scale": { "type": "number" } } },
+          "code": { "type": "string" },
+          "highlightLines": { "type": "array", "items": { "type": "integer" } },
+          "counter": { "type": "object", "properties": { "from": { "type": "number" }, "to": { "type": "number" }, "suffix": { "type": "string" } } },
+          "transitionIn": { "enum": ["cut", "fade", "dip", "push", "slide", "wipe", "iris", "zoom-through", "mask", "whip", "scale-blur", "match"] },
+          "sfx": { "type": "array", "items": { "type": "object", "properties": { "at": { "type": "number" }, "file": { "type": "string" }, "gain": { "type": "number" } } } }
+        }
+      }
+    }
+  }
+}

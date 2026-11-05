@@ -1,0 +1,21 @@
+{
+  "note": "Plausible, boring fixture data for recordings. No real people. Mix these so two trailers do not show the same project.",
+  "projects": ["Northwind Books", "Fjord Rentals", "Lumen Fitness", "Pocket Ledger", "Harbor CRM", "Pixelboard", "Meadow Grocery", "Orbit Tickets"],
+  "databases": ["main", "prod", "analytics", "catalog", "billing"],
+  "tables": ["orders", "customers", "invoices", "products", "sessions", "events", "bookings", "messages"],
+  "buckets": ["avatars", "receipts", "uploads", "exports"],
+  "functions": ["send-receipt", "resize-image", "sync-stripe", "nightly-report", "welcome-email"],
+  "people": [
+    {"name": "Lena Fischer", "email": "lena@northwind.example"},
+    {"name": "Tomás Varga", "email": "tomas@fjord.example"},
+    {"name": "Aisha Rahman", "email": "aisha@lumen.example"},
+    {"name": "Jonas Lind", "email": "jonas@pocketledger.example"},
+    {"name": "Mara Novak", "email": "mara@harbor.example"},
+    {"name": "Kenji Sato", "email": "kenji@pixelboard.example"},
+    {"name": "Priya Nair", "email": "priya@meadow.example"},
+    {"name": "Diego Alves", "email": "diego@orbit.example"}
+  ],
+  "statuses": ["paid", "pending", "refunded", "shipped", "draft", "active", "failed"],
+  "amounts": [129.9, 48.0, 1299.0, 17.5, 265.2, 89.99, 540.0, 12.0],
+  "cities": ["Prague", "Lisbon", "Tallinn", "Oslo", "Porto", "Kyoto", "Austin", "Cape Town"]
+}

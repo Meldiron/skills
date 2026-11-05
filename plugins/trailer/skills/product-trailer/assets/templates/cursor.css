@@ -1,0 +1,20 @@
+/* Injected by scripts/record.ts. A visible, slightly laggy cursor for headless recordings. */
+#__trailer_cursor {
+  position: fixed; left: 0; top: 0; width: 22px; height: 22px;
+  pointer-events: none; z-index: 2147483647;
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+#__trailer_cursor svg { display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+#__trailer_cursor.down svg { transform: scale(0.9); transform-origin: 3px 3px; }
+#__trailer_cursor .ripple {
+  position: absolute; left: -9px; top: -9px; width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid #FD366E; opacity: 0; transform: scale(0.3);
+}
+#__trailer_cursor.down .ripple { animation: __trailer_ripple 420ms ease-out forwards; }
+@keyframes __trailer_ripple {
+  0%   { opacity: .8; transform: scale(0.3); }
+  100% { opacity: 0;  transform: scale(1); }
+}
+/* Hide anything that leaks test-ness */
+::-webkit-scrollbar { display: none; }
