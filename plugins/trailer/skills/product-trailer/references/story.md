@@ -23,6 +23,10 @@ These are defaults. Shift the boundaries to match the music and the feature. A f
 
 **Celebration.** Not confetti. A calm, concrete result: "1 step." "0 config." "Live in every region." A before/after split with the same screen in both halves is the most convincing version. End on the logo and a single instruction for what to do next.
 
+## With narration
+
+If the brief says narrated, each beat gets one spoken line, written in `script.json` as `voice.text`, and the beat's timing stretches to fit the clip (`voice.md`). The beat sheet above still holds; speech fills 25-35 seconds of it, the rest is music and picture. The logo sting and the outro's last two seconds stay silent of voice.
+
 ## Choosing the story shape
 
 Pick one shape per trailer, so trailers do not all feel alike:

@@ -23,6 +23,7 @@ Where it lives:    Console page(s), SDK method(s), CLI command, API route
 Prerequisites:     plan, version, flags, data needed to show it
 Out of scope:      things we must not imply it does
 Tone:              calm / playful / punchy (default: calm and confident)
+Narration:         yes / no. Voiceover via ElevenLabs, one line per scene (default: no for X-first clips, yes for YouTube and launch pages)
 Length:            default 60s, allowed 45-75s
 Delivery:          where it will be posted (X, YouTube, docs page, launch page). Affects aspect ratio and captions
 ```

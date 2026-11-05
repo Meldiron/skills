@@ -9,6 +9,22 @@ claude plugin marketplace add meldiron/skills
 claude plugin install trailer@meldiron
 ```
 
+Then ask for a trailer the way you would ask a colleague:
+
+```
+/trailer:product-trailer Make a trailer for the new API key rotation feature. PR is appwrite/appwrite#15300.
+```
+
+```
+Can you make a 60s launch video for Database backups? It's in Console under Databases → Backups.
+Dark theme, no voiceover, it's going on X.
+```
+
+```
+We're shipping bulk row operations in TablesDB next week. Here's the docs page draft: docs/bulk.md.
+Make a narrated trailer, calm Apple-style voice, and show it from the SDK side not the Console.
+```
+
 Update later with `claude plugin update trailer@meldiron`. To make it part of a repo for everyone who opens it, run the first command with `--scope project` inside that repo; it writes `extraKnownMarketplaces` and `enabledPlugins` into `.claude/settings.json`.
 
 ## Plugins

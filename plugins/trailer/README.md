@@ -11,7 +11,37 @@ claude plugin marketplace add meldiron/skills
 claude plugin install trailer@meldiron
 ```
 
-Then in any project: `/trailer:product-trailer <feature name, PR link or description>`, or just ask for a trailer; the skill triggers on its own.
+Then in any project, ask the way you would ask a colleague. The skill triggers on its own, or call it with `/trailer:product-trailer`.
+
+```
+Make a trailer for the new API key rotation feature. PR is appwrite/appwrite#15300.
+```
+
+```
+Can you make a 60s launch video for Database backups? It's in Console under Databases → Backups.
+Dark theme, no voiceover, it's going on X.
+```
+
+```
+We're shipping bulk row operations in TablesDB next week. Here's the docs page draft: docs/bulk.md.
+Make a narrated trailer, calm Apple-style voice, and show it from the SDK side not the Console.
+```
+
+```
+Record a 10 second clip of creating a bucket in my local Console, I'll cut it myself.
+```
+
+Claude will read the PR or docs, send back a short story outline, and only then start recording and composing. If it cannot tell what the feature does or who it is for, it asks first.
+
+## Voiceover
+
+Narration uses ElevenLabs through the MCP1 gateway. Connect it once:
+
+```bash
+claude mcp add --transport http appwrite https://mcp1.com/mcp/appwrite/general
+```
+
+Each spoken line is generated as its own clip, scenes are sized to the clips, sound effects are kept out of the voice windows, and the music ducks under every line with fades.
 
 ## Requirements on the machine
 

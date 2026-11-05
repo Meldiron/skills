@@ -3,36 +3,243 @@
   "title": "Trailer script",
   "description": "Beat sheet for a product trailer. Feed as Remotion defaultProps. All times in seconds.",
   "type": "object",
-  "required": ["feature", "shape", "theme", "fps", "scenes"],
+  "required": [
+    "feature",
+    "shape",
+    "theme",
+    "fps",
+    "scenes"
+  ],
   "properties": {
-    "feature": { "type": "string" },
-    "shape": { "enum": ["before-after", "problem-widen", "cold-open", "one-number", "walkthrough"] },
-    "theme": { "enum": ["dark", "light"] },
-    "accent": { "type": "string", "description": "Secondary accent hex, optional. Pink is always primary.", "default": "" },
-    "fps": { "type": "integer", "default": 30 },
-    "music": { "type": "object", "properties": { "file": { "type": "string" }, "bpm": { "type": "number" }, "offset": { "type": "number", "description": "seconds from file start to first downbeat" } } },
+    "feature": {
+      "type": "string"
+    },
+    "shape": {
+      "enum": [
+        "before-after",
+        "problem-widen",
+        "cold-open",
+        "one-number",
+        "walkthrough"
+      ]
+    },
+    "theme": {
+      "enum": [
+        "dark",
+        "light"
+      ]
+    },
+    "accent": {
+      "type": "string",
+      "description": "Secondary accent hex, optional. Pink is always primary.",
+      "default": ""
+    },
+    "fps": {
+      "type": "integer",
+      "default": 30
+    },
+    "music": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "bpm": {
+          "type": "number"
+        },
+        "offset": {
+          "type": "number",
+          "description": "seconds from file start to first downbeat"
+        }
+      }
+    },
     "scenes": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "beat", "duration", "layout"],
+        "required": [
+          "id",
+          "beat",
+          "duration",
+          "layout"
+        ],
         "properties": {
-          "id": { "type": "string" },
-          "beat": { "enum": ["intro", "pain", "reveal", "demo", "payoff", "outro"] },
-          "duration": { "type": "number" },
-          "layout": { "enum": ["logo-sting", "hero-center", "hero-left", "footage-card", "footage-full", "footage-zoom", "split", "code-reveal", "label-footage", "counter", "stack", "end-card"] },
-          "headline": { "type": "string" },
-          "line": { "type": "string" },
-          "label": { "type": "string" },
-          "footage": { "type": "string", "description": "public/ path" },
-          "trimBefore": { "type": "number", "description": "seconds" },
-          "playbackRate": { "type": "number", "default": 1 },
-          "zoom": { "type": "object", "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "scale": { "type": "number" } } },
-          "code": { "type": "string" },
-          "highlightLines": { "type": "array", "items": { "type": "integer" } },
-          "counter": { "type": "object", "properties": { "from": { "type": "number" }, "to": { "type": "number" }, "suffix": { "type": "string" } } },
-          "transitionIn": { "enum": ["cut", "fade", "dip", "push", "slide", "wipe", "iris", "zoom-through", "mask", "whip", "scale-blur", "match"] },
-          "sfx": { "type": "array", "items": { "type": "object", "properties": { "at": { "type": "number" }, "file": { "type": "string" }, "gain": { "type": "number" } } } }
+          "id": {
+            "type": "string"
+          },
+          "beat": {
+            "enum": [
+              "intro",
+              "pain",
+              "reveal",
+              "demo",
+              "payoff",
+              "outro"
+            ]
+          },
+          "duration": {
+            "type": "number"
+          },
+          "layout": {
+            "enum": [
+              "logo-sting",
+              "hero-center",
+              "hero-left",
+              "footage-card",
+              "footage-full",
+              "footage-zoom",
+              "split",
+              "code-reveal",
+              "label-footage",
+              "counter",
+              "stack",
+              "end-card"
+            ]
+          },
+          "headline": {
+            "type": "string"
+          },
+          "line": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "footage": {
+            "type": "string",
+            "description": "public/ path"
+          },
+          "trimBefore": {
+            "type": "number",
+            "description": "seconds"
+          },
+          "playbackRate": {
+            "type": "number",
+            "default": 1
+          },
+          "zoom": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "scale": {
+                "type": "number"
+              }
+            }
+          },
+          "code": {
+            "type": "string"
+          },
+          "highlightLines": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "counter": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "number"
+              },
+              "to": {
+                "type": "number"
+              },
+              "suffix": {
+                "type": "string"
+              }
+            }
+          },
+          "transitionIn": {
+            "enum": [
+              "cut",
+              "fade",
+              "dip",
+              "push",
+              "slide",
+              "wipe",
+              "iris",
+              "zoom-through",
+              "mask",
+              "whip",
+              "scale-blur",
+              "match"
+            ]
+          },
+          "sfx": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "at": {
+                  "type": "number"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "gain": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "voice": {
+            "type": "object",
+            "description": "One spoken line for this scene",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "4-14 words, spoken English"
+              },
+              "file": {
+                "type": "string",
+                "description": "public/ path of the chosen take, e.g. audio/voice/03-reveal.mp3"
+              },
+              "seconds": {
+                "type": "number",
+                "description": "measured by scripts/voice-timeline.ts"
+              },
+              "start": {
+                "type": "integer",
+                "description": "absolute start frame, computed"
+              },
+              "leadFrames": {
+                "type": "integer",
+                "description": "override the lead-in after the cut (default 8, 15 after big transitions)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "narration": {
+      "type": "boolean",
+      "default": false
+    },
+    "voiceId": {
+      "type": "string",
+      "description": "ElevenLabs voice_id from elevenlabs__creative_list_voices"
+    },
+    "voiceFlowId": {
+      "type": "string",
+      "description": "ElevenLabs flow_id that holds all takes"
+    },
+    "voiceWindows": {
+      "type": "array",
+      "description": "Written by scripts/voice-timeline.ts. Merged frame ranges where voice plays; music ducks here",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "integer"
+          },
+          "to": {
+            "type": "integer"
+          }
         }
       }
     }

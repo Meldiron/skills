@@ -18,6 +18,8 @@ Sources, with what an agent can actually do:
 | **YouTube Audio Library** | Treat as YouTube-only | No | Skip for cross-platform |
 | **Epidemic Sound, Artlist, Musicbed, Soundstripe** | Paid subscription, covers ads and social | No | If the company has one, use it. Ask |
 
+ElevenLabs can also compose a track through the MCP1 gateway (`voice.md` has the setup): `elevenlabs__creative_generate_in_flow` with `node_type: "music"`, `model_id: "eleven_music_v2_5"` and a prompt like "calm confident electronic, 112 BPM, no vocals, soft build at 12 seconds, 65 seconds, clean ending". Generated music is owned by the workspace, so there is nothing to credit, and you can ask for the exact length and tempo instead of trimming a library track. Generate 2-4 variations, pick by ear in Studio.
+
 Check what the team already pays for before hunting free tracks. If a track needs attribution, put it in the video description and in `CREDITS.md` next to the render.
 
 Store as `public/audio/music.mp3`. Note BPM and the time of the first downbeat in `script.json`; tap it out in Studio or run `ffmpeg -i music.mp3 -af "ebur128" -f null -` and look at the loudness momentary peaks if the beat is clear. Many library tracks state BPM in their title or tags.
@@ -37,7 +39,9 @@ Where each one goes:
 | `hit` | Title lands, logo lands, the payoff number stops |
 | `tick` | Each step of a counter roll, every 2-3 frames |
 
-Rules: one sound per event, never stacked. Sounds sit 10-14 dB under the music peak, except the reveal hit which can match it. Nothing in the first 10 frames except the music fade-in and the logo hit.
+The same gateway makes one-off sound effects: `node_type: "sfx"`, `model_id: "eleven_text_to_sound_v2"`, prompt "short soft UI click, no reverb". Useful when the synthetic set is too plain for the reveal.
+
+Rules: one sound per event, never stacked. **Never under a voice line**: when the trailer is narrated, every SFX sits in the gaps between lines (`voice.md`, enforced by `scripts/voice-timeline.ts`). Sounds sit 10-14 dB under the music peak, except the reveal hit which can match it. Nothing in the first 10 frames except the music fade-in and the logo hit.
 
 ## Mixing in Remotion
 
@@ -45,6 +49,7 @@ Do the mix in Remotion, not in a DAW, so re-renders stay consistent:
 
 - Music `<Audio>` at volume 0.55-0.7 with a 1-second fade in and a 2-second fade out, written as a function of frame.
 - Duck the music by 0.15-0.25 for 10 frames around the reveal hit and the payoff hit; `interpolate` the volume with the hit frames as input range.
+- With narration, duck to 0.22-0.3 under every voice window with a 12-frame fade down and an 18-frame fade up; the windows come from `script.json` after `scripts/voice-timeline.ts` runs. Details and code in `voice.md`.
 - Each SFX in its own `<Sequence from={frame}>` with `<Audio volume={0.4-0.8}>`.
 - Keep the last frame of audio before the last frame of video; a video that ends on a sound tail feels unfinished.
 

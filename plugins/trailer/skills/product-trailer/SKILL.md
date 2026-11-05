@@ -16,8 +16,9 @@ You are making a 45-75 second video that convinces a developer a feature is wort
 4. **Record footage.** Playwright, clock-stepped PNG frames, DPR 2, injected cursor, human pacing: `references/recording.md` and `scripts/record.ts`. One take per shot. Convert to H.264 with `scripts/frames-to-mp4.sh`.
 5. **Compose in Remotion.** Install the official Remotion skills first (`npx skills add remotion-dev/skills`), then `references/remotion.md`. Theme from `references/design-tokens.md`, layouts from `references/layouts.md`, motion from `references/transitions.md`. Beat sheet lives in `script.json` and drives the composition.
 6. **Write the copy** last, once the footage shows what it shows: `references/copy.md`. Short, concrete, no slop, no subtitles.
-7. **Audio.** Music chosen and licensed per `references/audio.md`, SFX generated with `scripts/make-sfx.sh`, mixed in Remotion, checked with `scripts/mix-check.sh`.
-8. **Render and review.** `npx remotion render Trailer out/trailer.mp4`, a still at frame 45 for the thumbnail, then scrub it: first second, last second, every text hold, every cut on a beat. Write `CREDITS.md`.
+7. **Voice (if the brief says narrated).** Write one spoken line per scene, generate each line as its own clip with ElevenLabs through the MCP1 gateway, download the clips, then run `scripts/voice-timeline.ts` to size scenes to the clips and catch SFX collisions: `references/voice.md`.
+8. **Audio.** Music chosen, licensed or generated per `references/audio.md`, SFX generated with `scripts/make-sfx.sh`, music ducked under voice, mixed in Remotion, checked with `scripts/mix-check.sh`.
+9. **Render and review.** `npx remotion render Trailer out/trailer.mp4`, a still at frame 45 for the thumbnail, then scrub it: first second, last second, every text hold, every cut on a beat. Write `CREDITS.md`.
 
 ## Non-negotiables
 
@@ -28,6 +29,7 @@ You are making a 45-75 second video that convinces a developer a feature is wort
 - **Console design language.** Exact tokens, fonts, radii and badge colours from `references/design-tokens.md`. One pink accent per frame.
 - **Footage is real.** Recorded from the Console or a demo app talking to local Appwrite. No mockups pretending to be the product, no stock footage.
 - **Every video looks different.** Rotate story shape, theme, accent, intro variant, framing and transition family per `references/layouts.md`. If two trailers could swap their slides, one of them is wrong.
+- **Voice owns its moment.** No sound effect plays while the voice speaks, music dips under every line with fades, and the picture waits for the line to finish. `references/voice.md`.
 - **Licensed.** Music licence recorded in `CREDITS.md`. Remotion needs a company licence for teams of 4+ (`references/remotion.md`); confirm it exists.
 
 ## Reference map
@@ -44,8 +46,17 @@ You are making a 45-75 second video that convinces a developer a feature is wort
 | Choosing a layout for a slide, making the video distinct | `references/layouts.md` |
 | Choosing or building a transition, easing, text holds | `references/transitions.md` |
 | Finding music, placing SFX, loudness | `references/audio.md` |
+| Narration: writing lines, generating with ElevenLabs, syncing, ducking | `references/voice.md` |
 
-Bundled: `assets/logos/` (official SVGs), `assets/templates/cursor.css`, `assets/templates/fixtures.json` (fake data), `assets/templates/script.schema.json` (beat sheet schema), `scripts/record.ts`, `scripts/login.ts`, `scripts/frames-to-mp4.sh`, `scripts/make-sfx.sh`, `scripts/mix-check.sh`.
+## Tools to connect
+
+ElevenLabs (voice, and optionally music and SFX) is reached through the MCP1 gateway. If the `elevenlabs__creative_*` tools are not available in the session, add the server and let the user complete the OAuth prompt:
+
+```bash
+claude mcp add --transport http appwrite https://mcp1.com/mcp/appwrite/general
+```
+
+Bundled: `assets/logos/` (official SVGs), `assets/templates/cursor.css`, `assets/templates/fixtures.json` (fake data), `assets/templates/script.schema.json` (beat sheet schema), `scripts/record.ts`, `scripts/login.ts`, `scripts/frames-to-mp4.sh`, `scripts/make-sfx.sh`, `scripts/mix-check.sh`, `scripts/voice-timeline.ts`.
 
 ## Project layout you will produce
 
@@ -56,6 +67,7 @@ Bundled: `assets/logos/` (official SVGs), `assets/templates/cursor.css`, `assets
 ├── seed/                # Appwrite CLI config + seed script
 ├── record/              # record.ts copies, one per take, .auth/state.json
 ├── footage/             # PNG frames and converted mp4 per take
+├── remotion/public/audio/voice/   # one mp3 per narrated line
 └── remotion/            # the Remotion project (public/, src/)
 ```
 
@@ -65,4 +77,4 @@ Intro 0-2.5s, pain 2.5-12s, reveal 12-17s, demo 17-47s, payoff 47-53s, outro 53-
 
 ## When you are done
 
-Deliver: the mp4, the thumbnail PNG, `script.json`, `CREDITS.md`, and a 3-line note saying what the story is, which look was chosen, and anything that still needs a human (a licence, a Cloud-only screen you could not record, a claim to verify).
+Deliver: the mp4, the thumbnail PNG, `script.json` (with voice timings if narrated), `CREDITS.md`, and a 3-line note saying what the story is, which look was chosen, and anything that still needs a human (a licence, a Cloud-only screen you could not record, a claim to verify).

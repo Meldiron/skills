@@ -90,6 +90,8 @@ import { Audio } from '@remotion/media'
 
 Write the volume as a function of frame so Studio draws the curve. Ducking: lower the middle value for the frames where an SFX or the proof-shot hits. Place SFX in a `<Sequence from={hitFrame}>` with its own `<Audio>`; 10-20 short sounds is normal for 60 seconds. See `audio.md` for sources and loudness.
 
+Narration: one `<Sequence from={voice.start}>` with an `<Audio>` per line, and the music volume function walks `voiceWindows` from `script.json` to duck with fades. The pattern is in `voice.md`.
+
 Get a music track's length to size the outro: `npx remotion` has no CLI for this, use `ffprobe -show_entries format=duration` or Mediabunny `getMediaMetadata()`.
 
 ## Transitions
