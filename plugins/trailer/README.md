@@ -41,7 +41,11 @@ Narration uses ElevenLabs through the MCP1 gateway. Connect it once:
 claude mcp add --transport http appwrite https://mcp1.com/mcp/appwrite/general
 ```
 
-Each spoken line is generated as its own clip, scenes are sized to the clips, sound effects are kept out of the voice windows, and the music ducks under every line with fades.
+Each spoken line is generated as its own clip, scenes are sized to the clips, sound effects are kept out of the voice windows, and the music ducks under every line with fades. Narration is on by default.
+
+## Lessons baked in from the first trailers
+
+The skill carries a review checklist (`references/review.md`) distilled from real feedback: no labels on footage, one static framing per shot with click-ring callouts instead of camera moves, the music drop on the frame the title lands, "Introducing... <feature>" spoken calmly, code slides of at most five lines that hold only as long as their line, spoken copy that is technically exact and free of UI trivia, and a pain shot that cannot be mistaken for the demo. It also documents running an unmerged PR branch as a sidecar API next to an existing dev stack and using pkg.pr.new preview SDKs in the demo app.
 
 ## Requirements on the machine
 
@@ -52,7 +56,7 @@ Docker (for local Appwrite), Node 20+, ffmpeg, Playwright's Chromium (`npx playw
 ```
 skills/product-trailer/
 ├── SKILL.md                 # workflow, non-negotiables, reference map
-├── references/              # intake, story, copy, local-appwrite, recording, remotion, design-tokens, layouts, transitions, audio
-├── scripts/                 # record.ts, login.ts, frames-to-mp4.sh, make-sfx.sh, mix-check.sh
+├── references/              # intake, story, copy, local-appwrite, recording, remotion, design-tokens, layouts, transitions, audio, voice, review
+├── scripts/                 # record.ts (takes, smoke mode, click log), login.ts, frames-to-mp4.sh, ui-events.sh, make-sfx.sh, find-drop.sh, mix-check.sh, voice-timeline.ts, render-discord.sh
 └── assets/                  # official Appwrite logo SVGs, cursor.css, fixtures.json, script.schema.json
 ```

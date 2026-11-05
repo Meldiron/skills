@@ -20,7 +20,7 @@ The first call opens an OAuth sign-in. The tools are prefixed `elevenlabs__creat
 | Wait | `elevenlabs__creative_get_flow_run_status` | Poll with `flow_id` + `session_ids` until `all_completed`. Honour `poll_after_seconds` |
 | Download | `elevenlabs__creative_get_generations` | Returns `full_res_url` per generation. `curl -L -o public/audio/voice/03-reveal.mp3 "<url>"`. URLs are signed and expire, so download immediately |
 
-One call per line, never one call for the whole script. Separate files are what make sync possible: each clip's length is measured and the scene is sized to it. Generate two takes per line and keep the one with the better pacing; the other stays on the flow if you want to swap later. Do not call `generate_speech` again to "retry" a line that is still running; that charges a second generation.
+One call per line, never one call for the whole script. Separate files are what make sync possible: each clip's length is measured and the scene is sized to it. A line costs about one to two cents, so regenerating after a copy note is nothing; say so when you hand over. Generate two takes per line only when someone can audition them; an agent that cannot listen should generate one take and flag it for a human ear. Do not call `generate_speech` again to "retry" a line that is still running; that charges a second generation. All nine lines of a trailer can be fired in one turn as parallel calls, then collected with a single `creative_get_flow_run_status` carrying every session id.
 
 `eleven_v4` understands inline direction tags: `[pause]`, `[softly]`, `[slower]`, `[confident]`. Use at most one per line. Read the model guide once with `elevenlabs__creative_get_model_guide` if a line comes out wrong.
 
@@ -34,7 +34,8 @@ The narration follows the same three movements as the picture (`story.md`) and t
 - **Say what the viewer cannot see; show what you do not say.** If the slide says "Key rotation", the voice does not say "key rotation". It says "Your old key keeps working for a day."
 - **Spoken English.** Contractions, short clauses, no colons, no parentheses, no product-name-as-adjective. Read every line aloud before generating it.
 - **Pain lines are observations, not complaints.** "Today, rotating a key means four screens and a prayer." is fine. "Are you tired of..." is not.
-- **The reveal line is the feature's name and nothing else**, or the name plus a four-word promise. Let the hit land after it.
+- **The reveal line is "Introducing... <Feature name>."** in a calm, serious read. No `[confident]` tag, no exclamation: the first draft with the bare name read as shouting. Start the clip before the cut so "Introducing" plays over the zoom into the reveal and the name begins right after the music drop (see `offsetFrames` below). Measure the pause in the clip with `ffmpeg -af silencedetect=noise=-35dB:d=0.15` to place it.
+- **No implementation detail, and technically exact.** See "Spoken copy" in `copy.md`; two of the first nine lines had to be rewritten for this.
 - **The last line is an instruction.** "It's in Settings today." "Try it on any plan."
 - **No line over footage of typing or waiting.** The voice speaks when something has just happened or is about to.
 
@@ -50,7 +51,7 @@ npx tsx scripts/voice-timeline.ts script.json      # measures clips with ffprobe
 
 What it computes, per scene with a voice line:
 
-1. `voice.start` = scene start + lead-in. Lead-in is 8 frames (0.27s) after a cut, 15 frames after a big transition such as a reveal. If the scene has a transition sound at its top (a whoosh or hit in `sfx` before the lead-in), the lead-in moves past the end of that sound plus a 6-frame guard, so the voice never speaks over it.
+1. `voice.start` = scene start + lead-in (+ `voice.offsetFrames`, which may be negative to start a line before the cut). Lead-in is 8 frames (0.27s) after a cut, 15 frames after a big transition such as a reveal. If the scene has a transition sound at its top (a whoosh or hit in `sfx` before the lead-in), the lead-in moves past the end of that sound plus a 6-frame guard, so the voice never speaks over it. Scene starts are composition frames: the script subtracts each scene's `transitionIn` overlap using the same table as the Remotion project, so `voice.start` and `voiceWindows` go straight into `<Sequence from>`. Override a non-default length with `transitionFrames` on the scene.
 2. Minimum scene duration = lead-in + `voice.seconds` + tail. Tail is 18 frames (0.6s) so the last word is not cut by the next transition. If the scene was shorter in the plan, it is lengthened and every later scene shifts.
 3. The scene may be longer than the voice (footage needs its time); then the voice sits at the start and the picture finishes the thought in silence.
 
@@ -58,7 +59,7 @@ Keep the slide's text hold rule from `transitions.md` as well: when a slide has 
 
 ## Sound effects and voice never overlap
 
-A click or whoosh under a word reads as a mistake and masks a consonant. The timeline script marks every frame where voice is playing, plus a 6-frame guard on each side, as a no-SFX zone and reports any `sfx` entry inside it. Fix by moving the SFX before the voice starts or after it ends, or by dropping it: a scene with narration rarely needs more than the transition whoosh before the first word and one pop after the last.
+A click or whoosh under a word reads as a mistake and masks a consonant. The timeline script marks every frame where voice is playing, plus a 6-frame guard on each side, as a no-SFX zone and reports any `sfx` entry inside it. Fix by moving the SFX before the voice starts or after it ends, or by dropping it: a scene with narration rarely needs more than the transition whoosh before the first word and one pop after the last. Footage clicks (`clicks`) are only reported, because the composition drops them automatically: build the SFX list in Remotion, then filter out anything inside a voice window (`remotion.md` has the snippet). The reveal and payoff hits are exempt; they may sit under a word.
 
 Transition sounds belong in the gap between lines. That is why the lead-in exists: the whoosh plays over the cut, finishes, then the voice begins.
 
@@ -89,4 +90,4 @@ Each voice clip is its own `<Sequence from={voice.start}><Audio src={staticFile(
 
 ## Without a voice
 
-Narration is optional. A trailer for a small feature, or one meant for X where most people watch muted, works better with slides only. Decide in the brief (`intake.md`, field "Narration: yes/no"). A trailer with voice must still make sense on mute, so every spoken line has a visual that carries the same meaning.
+Narration is the default; the first trailer shipped without it and came back with "it should be spoken voice instead". A trailer for a small feature, or one meant for X where most people watch muted, works better with slides only. Decide in the brief (`intake.md`, field "Narration: yes/no"). A trailer with voice must still make sense on mute, so every spoken line has a visual that carries the same meaning.

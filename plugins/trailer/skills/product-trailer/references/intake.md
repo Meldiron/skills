@@ -23,7 +23,7 @@ Where it lives:    Console page(s), SDK method(s), CLI command, API route
 Prerequisites:     plan, version, flags, data needed to show it
 Out of scope:      things we must not imply it does
 Tone:              calm / playful / punchy (default: calm and confident)
-Narration:         yes / no. Voiceover via ElevenLabs, one line per scene (default: no for X-first clips, yes for YouTube and launch pages)
+Narration:         yes / no. Voiceover via ElevenLabs, one line per scene (default: yes; the first unnarrated draft was sent back asking for a voice. Say no only for a muted-feed X clip)
 Length:            default 60s, allowed 45-75s
 Delivery:          Discord by default (free upload limit 20 MB; ask if the poster has Nitro or a boosted server). Also X, YouTube, docs page, launch page. Affects size, aspect ratio and captions
 ```
@@ -35,6 +35,10 @@ Delivery:          Discord by default (free upload limit 20 MB; ask if the poste
 - Is there a before/after that fits in one screen each?
 - Which parts are still rough? Avoid recording them.
 - Who should be credited or thanked, if anyone?
+
+## Where the feature runs
+
+A PR that is not merged usually cannot run in the machine's existing dev stack. Plan for a sidecar API container built from (or mounting) the branch, a fresh project on it, and a preview SDK build from pkg.pr.new: `references/local-appwrite.md`. Budget an hour for this before any footage exists.
 
 ## Confirm before building
 

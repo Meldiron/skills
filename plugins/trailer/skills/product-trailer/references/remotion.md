@@ -74,7 +74,8 @@ import { Video } from '@remotion/media'   // preferred: fast, WebCodecs-based
 ```
 
 - Playwright WebM plays directly, but convert to H.264 mp4 anyway (`recording.md`) for faster renders and reliable seeking.
-- `trimBefore` is in source frames; cut footage with props, not CSS or offsets.
+- `trimBefore` is in composition frames (seconds × composition fps), unaffected by `playbackRate`; cut footage with props, not CSS or offsets.
+- Zoomed footage: wrap the `<Video>` in an `<AbsoluteFill style={{ scale, transformOrigin: `${x*100}% ${y*100}%` }}>` with one `scale`/origin per shot (see `layouts.md`, footage-zoom). Put click-ring callouts inside the same container so they move with it. With `transformOrigin` at `100% 0%` the right and top edges stay pinned, which is what a top-right menu needs; an origin of `84% 20%` cut the menu off at the right edge in the first draft.
 - `playbackRate` up to about 1.5 reads as "snappy", above 2 reads as a time-lapse. Speed up typing and waiting, never the moment the feature does its thing.
 - Wrap footage in a device frame or a floating card (`layouts.md`) with the Console border and radius so it reads as a product shot, not a screen recording.
 - `<OffthreadVideo>` is the fallback when `@remotion/media` cannot decode something. It downloads the whole file first; keep clips short and local.
@@ -90,7 +91,14 @@ import { Audio } from '@remotion/media'
 
 Write the volume as a function of frame so Studio draws the curve. Ducking: lower the middle value for the frames where an SFX or the proof-shot hits. Place SFX in a `<Sequence from={hitFrame}>` with its own `<Audio>`; 10-20 short sounds is normal for 60 seconds. See `audio.md` for sources and loudness.
 
-Narration: one `<Sequence from={voice.start}>` with an `<Audio>` per line, and the music volume function walks `voiceWindows` from `script.json` to duck with fades. The pattern is in `voice.md`.
+Narration: one `<Sequence from={voice.start}>` with an `<Audio>` per line, and the music volume function walks `voiceWindows` from `script.json` to duck with fades (both already in composition frames since `voice-timeline.ts` subtracts transition overlaps). Build the SFX list from `script.json` (`sfx`, `clicks`, counter ticks) in one function and filter it against the voice windows, keeping only the hits:
+
+```ts
+const underVoice = (f: number) => voiceWindows.some((w) => f >= w.from - 6 && f <= w.to + 6)
+events.filter((e) => e.file.endsWith('hit.wav') || !underVoice(e.frame))
+```
+
+Music: `<Audio src trimBefore={Math.round(music.trimBefore * fps)} volume={musicVolume} />`, where `trimBefore` was set so the drop lands on the reveal hit (`audio.md`). The pattern is in `voice.md`.
 
 Get a music track's length to size the outro: `npx remotion` has no CLI for this, use `ffprobe -show_entries format=duration` or Mediabunny `getMediaMetadata()`.
 
@@ -112,6 +120,10 @@ import { wipe } from '@remotion/transitions/wipe'
 ```
 
 Rules: a transition must be shorter than both neighbours, two transitions cannot be adjacent, and the total length is the sum of scenes minus overlaps (compute `durationInFrames` for the Composition from the same numbers). Built-in presentations: `fade`, `slide`, `wipe` (8 directions), `flip`, `clockWipe`, `iris`, `cube`, `none` (then animate with `useTransitionProgress()`). Custom presentations receive `presentationProgress` 0-1 and `presentationDirection`, which is how the mask reveal, zoom-through and push-with-blur transitions in `transitions.md` are built. Use `TransitionSeries` for scene-to-scene cuts and plain `interpolate`/`spring` for motion inside a scene.
+
+## Beat sheet as data
+
+Keep `script.json` outside `src/` and import it (`import raw from '../../script.json'` with `resolveJsonModule`). Derive everything from it in one module: `sceneFrames`, `transitionFrames` (a table keyed by `transitionIn`, identical to the one in `voice-timeline.ts`), `sceneStart` (cumulative minus overlaps), `totalFrames`, the voice cues and the SFX events. The `Composition` reads `totalFrames` from there, so re-timing a scene never leaves the duration stale. Print the table with `npx tsx -e` when you need the frame of a scene for a music or voice calculation.
 
 ## Fonts
 
@@ -161,5 +173,6 @@ npx remotion still Trailer out/thumb.png --frame 45    # thumbnail from the intr
 - `--concurrency` defaults to half the CPU threads; raise with care, too high and media loads fail. `npx remotion benchmark` finds the sweet spot.
 - Frames that take longer than 30s hit the `delayRender` timeout. Usual causes: huge footage via OffthreadVideo, remote fonts, blur filters on large layers. Bake blurs and glows to PNGs.
 - `--frames=0-150` renders a slice for quick checks of a single scene.
-- Check the result: play it, scrub the first and last second, confirm audio does not clip (`audio.md` loudness check).
+- Check the result: play it, scrub the first and last second, confirm audio does not clip (`audio.md` loudness check). An agent cannot play it: render `--scale 0.5 --crf 28` first (about a minute for 60 s), extract one still per scene with `ffmpeg -vf "select='eq(n,N)'" -frames:v 1` and read them. Then render the master.
+- A narrated mix lands around -16 LUFS with the voice at 0.95 and music at 0.95 ducked to 0.3; pushing to -14 clips the voice peaks. Report the number instead of forcing it.
 - `premountFor` only affects Studio and Player preview, the render is frame-exact regardless.

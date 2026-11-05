@@ -79,7 +79,18 @@ const zoomThrough = ({ x = 0.5, y = 0.5 }): TransitionPresentation<{}> => ({
 
 **Dip to colour:** two `fade()` transitions with a 4-frame solid `Sequence` of the colour between them, or a custom presentation that fades the exiting scene to a colour overlay in the first half and the entering scene from it in the second.
 
-**Push with motion blur:** `slide()` for the geometry, `<CameraMotionBlur shutterAngle={200} samples={6}>` around the `TransitionSeries` during that transition only (it is expensive).
+**Whip (push with velocity blur), cheap:** a custom presentation that translates X and blurs by `sin(p * π) * 18px`. It reads as a whip pan without `<CameraMotionBlur>` and renders at full speed. 11 frames with `springTiming({ damping: 200 })`.
+
+```tsx
+const Whip: React.FC<TransitionPresentationComponentProps<Record<string, never>>> = ({ children, presentationProgress: p, presentationDirection: d }) => (
+  <AbsoluteFill style={{ overflow: 'hidden' }}>
+    <AbsoluteFill style={{ translate: `${d === 'exiting' ? -p * 100 : (1 - p) * 100}% 0`, filter: `blur(${Math.sin(p * Math.PI) * 18}px)` }}>{children}</AbsoluteFill>
+  </AbsoluteFill>
+)
+export const whip = (): TransitionPresentation<Record<string, never>> => ({ component: Whip, props: {} })
+```
+
+Typing note: `TransitionSeries.Transition` infers its props type from the first presentation it sees, so a function that returns `fade()` in one branch and `wipe()` in another needs a `TransitionPresentation<any>` cast. Build the series children as an array of keyed elements, not fragments.
 
 ## Inside-scene motion
 

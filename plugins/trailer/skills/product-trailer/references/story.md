@@ -17,9 +17,9 @@ These are defaults. Shift the boundaries to match the music and the feature. A f
 
 ## Writing the three movements
 
-**Pain.** Show, do not narrate. The strongest pain scenes are footage: the user clicks through four pages to do one thing, or scrolls a wall of config, or waits on a spinner. Speed it up to 2x so it feels tedious without being tedious. If footage is impossible, use one slide with one line ("Four steps to rotate a key.") and a muted screenshot. Avoid a bullet list of pains; pick the single one the feature solves best.
+**Pain.** Show, do not narrate. The strongest pain scenes are footage: the user clicks through four pages to do one thing, or scrolls a wall of config, or waits on a spinner. Speed it up to 2.5x so it feels tedious without being tedious, desaturate it, and give it a glitch flicker at the worst moment. Make sure it cannot be mistaken for the demo: if the new feature also involves a form, record the old way as a full-page flow and the new way inside a popover or panel, or the viewer sees the same screen twice. If footage is impossible, use one slide with one line ("Four steps to rotate a key.") and a muted screenshot. Avoid a bullet list of pains; pick the single one the feature solves best.
 
-**Feature.** Name it once, the way the docs name it. Then stop talking and let the product work. Each demo shot has a cause and an effect inside the same shot: the cursor clicks "Enable", the badge flips to green. If the effect is invisible (latency, security), make it visible: a timer, a counter, a diff, a status badge.
+**Feature.** Name it once, the way the docs name it, spoken as "Introducing... <name>." with the music drop and the hit on the frame the title lands. Then stop talking and let the product work. Each demo shot has a cause and an effect inside the same shot: the cursor clicks "Enable", the badge flips to green. If the effect is invisible (latency, security), make it visible: a timer, a counter, a diff, a status badge.
 
 **Celebration.** Not confetti. A calm, concrete result: "1 step." "0 config." "Live in every region." A before/after split with the same screen in both halves is the most convincing version. End on the logo and a single instruction for what to do next.
 

@@ -41,7 +41,17 @@ Structures: "It's not X, it's Y." "No X. No Y. Just Z." Three-item lists for rhy
 
 ## Labels on footage
 
-A label is 1-4 words in a small card anchored to a corner or next to the cursor. It names the step ("Create key", "Scopes", "Rotate"). Labels are not sentences and never explain; the footage explains. Use the Console badge style from `design-tokens.md`: 1px border, 6px radius, 28-32px text, muted background.
+Do not put them on footage. A label card anchored to a corner of a shot reads as a caption, and the first reviewer called it exactly that. If a step needs naming, the voice names it, or a headline slide sits between shots. The badge style (1px border, 6px radius, 28-32px text, muted background) is still right for small UI fragments on slides, such as the "Personal" / "Work" chips next to a hero headline.
+
+## Spoken copy
+
+The same rules apply to narration, plus these, each learned from a review note:
+
+- **No implementation detail.** "Add a second account right from the menu" became "Add a second account." Where the button lives is visible in the footage.
+- **Technically exact.** "The first one stays signed in" was wrong for account switching; "the previous session stays alive on the device, and the new one becomes active automatically" was right. Read the PR, then write the line, then check the line against the PR.
+- **The product's nouns.** A device holds sessions, not accounts; a table holds rows, not records. Use the word the API uses.
+- **Cut what does not change the viewer's mind.** "The session cookie rotates for you" was dropped. If a sentence explains how rather than what, it goes.
+- **The reveal is "Introducing... <Feature name>."** Calm and serious, no exclamation, no direction tag that makes the voice push.
 
 ## Voice check before rendering
 

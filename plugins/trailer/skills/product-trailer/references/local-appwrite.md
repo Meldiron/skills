@@ -22,6 +22,28 @@ Manage: `docker compose stop|start` in `~/appwrite-local/appwrite`, `docker comp
 
 Self-hosted allows one organization; the Console creates it with the first sign-in. Email verification is off by default locally.
 
+## Running a PR branch beside an existing dev stack
+
+The feature usually lives on an unmerged branch, and the running dev stack belongs to another checkout. Do not switch that checkout. Run the branch as a sidecar API on the stack's network instead:
+
+```bash
+docker inspect appwrite --format '{{range .Config.Env}}{{println .}}{{end}}' | grep '^_APP_' > api.env
+R=~/Documents/GitHub/appwrite   # the branch checkout
+docker run -d --name appwrite-branch --network appwrite -p 9601:80 --env-file api.env \
+  -v $R/app:/usr/src/code/app -v $R/src:/usr/src/code/src -v $R/public:/usr/src/code/public \
+  -v $R/tests:/usr/src/code/tests -v $R/docs:/usr/src/code/docs -v $R/dev:/usr/src/code/dev \
+  -v $R/packages:/usr/src/code/packages -v $R/phpunit.xml:/usr/src/code/phpunit.xml \
+  -v $R/docker-compose.yml:/usr/src/code/docker-compose.yml -v $R/.env:/usr/src/code/.env \
+  -v <stack>_appwrite-config:/storage/config -v <stack>_appwrite-uploads:/storage/uploads appwrite-dev:latest
+curl -s http://localhost:9601/v1/health/version
+```
+
+This reuses the image's vendor; check `git diff <stack-commit> <branch> -- composer.lock` first and build the image from the branch if a runtime dependency moved. New collections and columns from the branch exist only on projects created through the sidecar, so create a fresh project there rather than migrating the shared database. Self-hosted allows one organisation: if the shared console DB already has one (e2e suites create them), log in as its owner (test users are usually `password`) to create the project, or ask. The dev stack also leaves no email verification and no CORS restrictions beyond the Web platform, which you add with `POST /v1/projects/:id/platforms` (`platformId` is required).
+
+SDKs: the published `appwrite` web SDK will not have the branch's new methods. The PR's SDK Preview publishes `pkg.pr.new/appwrite/appwrite/@appwrite.io/console@<PR number>`; the Console SDK works against any project, so install that tarball in the demo app and show the web SDK's method names on the code slides (they are generated from the same spec). Check which packages exist with a HEAD request before relying on one.
+
+Demo app plumbing: serve the demo with Vite and proxy `/v1` to the sidecar (`server.proxy: { '/v1': 'http://localhost:9601' }`) so the app and the API share the `localhost` origin. Cookies then just work, no fallback header games. Point the SDK at `${location.origin}/v1`. Remove the sidecar (`docker rm -f`) when the reviewer has signed off, not before.
+
 ## Seed realistic data with the CLI
 
 Empty tables look like a demo. Fill them with plausible, boring data before recording (real-looking names, dates spread over weeks, a few statuses). Use the CLI in non-interactive mode so the seed is a script you can rerun:

@@ -24,7 +24,11 @@ for (let i = 0; i < totalFrames; i++) {
 }
 ```
 
-Caveats: CSS transitions and animations are not driven by the fake clock, they run on wall time. The Console's 150-200ms transitions will look instantaneous unless you either (a) also pause for real time between frames, or (b) slow them with CDP `Animation.setPlaybackRate` to match. The bundled `scripts/record.ts` handles this by stepping the clock and sleeping a matching real interval so CSS transitions span the right number of frames. Network requests still happen in real time; the local Appwrite responds in milliseconds, so this is rarely visible.
+Caveats: CSS transitions and animations are not driven by the fake clock, they run on wall time. The Console's 150-200ms transitions will look instantaneous unless you slow them down: the bundled `scripts/record.ts` sends CDP `Animation.setPlaybackRate 0.25` so a 160 ms menu animation spans a few captured frames. Capture runs at roughly 3-6 frames per second of wall time at 1600x900 DPR 2 (slower when several takes record in parallel); a 15-second take takes 3-5 minutes. Network requests still happen in real time; the local Appwrite responds in milliseconds, so this is rarely visible.
+
+`record.ts` is organised as named takes (`--take pain|add|switch`), each with a `setup()` that creates the backend state through `context.request` (it shares the cookie jar with the page, so sessions created there are already in the browser) and a `shots()` block. Run every take with `--mode smoke` first: it plays in real time and saves a screenshot at each `h.snap()`, which is how you catch a wrong layout before spending five minutes on frames.
+
+Every `h.click()` and `h.type()` is written to `<out>.events.json` with its frame, seconds and 0-1 viewport coordinates. That file is the source for click SFX and click-ring callouts in the composition; convert to composition time with `(t - trimBefore) / playbackRate`. Detecting clicks afterwards from the pixels does not work (the pink ripple is too small for colour keying); for a take recorded without the log, `scripts/ui-events.sh` finds the frames where the page visibly changed, which is where pops belong.
 
 ### Screencast
 
@@ -38,7 +42,7 @@ Also available: `page.screencast.showActions({ cursor: 'pointer' })` draws an an
 
 ## Viewport and scale
 
-Record at `viewport: { width: 1600, height: 900 }, deviceScaleFactor: 2` for footage that will be shown inside a card or device frame on a 1920x1080 canvas; the 3200x1800 source lets you zoom to a region without softness. Record at `1920x1080, DPR 2` only when the footage fills the frame. The Console E2E suite uses 1920x1080; its sidebar is 200px and header 56px, so at 1600 wide everything still fits.
+Record at `viewport: { width: 1600, height: 900 }, deviceScaleFactor: 2` and keep the 3200x1800 output (`frames-to-mp4.sh` at scale 1). Footage is shown zoomed to 1.3-1.9x so the UI is legible on a phone, and a 1920x1080 encode goes soft at that zoom. The Console E2E suite uses 1920x1080; its sidebar is 200px and header 56px, so at 1600 wide everything still fits. UI footage compresses to well under 1 MB per take at CRF 16, so file size is not a reason to downscale. The Console E2E suite uses 1920x1080; its sidebar is 200px and header 56px, so at 1600 wide everything still fits.
 
 For 9:16 cuts, record a second take at `1080x1920`-friendly proportions or plan a zoom-and-pan over the 16:9 take. Do not stretch.
 
@@ -86,6 +90,10 @@ ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_r
 ```
 
 `scripts/frames-to-mp4.sh` wraps the second command. Keep the PNG frames until the final render is approved; re-encoding from PNG is free, re-recording is not.
+
+## Designing the demo app for the camera
+
+When the feature is shown in a demo app you wrote, design its surfaces so the shots read differently. A full-page sign-in for the old way and a popover with the same fields for the new way look like two different features; two full pages look like the same shot twice. Put the interaction the trailer is about in one corner (a top-right account menu, a side panel) so one static framing holds the trigger, the panel and the outcome. Give every clickable a `data-testid` so `record.ts` can find it, and keep the app one screen.
 
 ## Shot checklist
 

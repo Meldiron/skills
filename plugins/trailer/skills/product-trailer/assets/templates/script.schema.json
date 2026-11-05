@@ -50,6 +50,14 @@
         "offset": {
           "type": "number",
           "description": "seconds from file start to first downbeat"
+        },
+        "trimBefore": {
+          "type": "number",
+          "description": "seconds trimmed from the start so the drop lands on the reveal hit (scripts/find-drop.sh)"
+        },
+        "dropAt": {
+          "type": "number",
+          "description": "seconds into the source file where the drop lands"
         }
       }
     },
@@ -102,9 +110,6 @@
           "line": {
             "type": "string"
           },
-          "label": {
-            "type": "string"
-          },
           "footage": {
             "type": "string",
             "description": "public/ path"
@@ -116,20 +121,6 @@
           "playbackRate": {
             "type": "number",
             "default": 1
-          },
-          "zoom": {
-            "type": "object",
-            "properties": {
-              "x": {
-                "type": "number"
-              },
-              "y": {
-                "type": "number"
-              },
-              "scale": {
-                "type": "number"
-              }
-            }
           },
           "code": {
             "type": "string"
@@ -210,15 +201,80 @@
               "leadFrames": {
                 "type": "integer",
                 "description": "override the lead-in after the cut (default 8, 15 after big transitions)"
+              },
+              "offsetFrames": {
+                "type": "integer",
+                "description": "shift the line; negative starts it before the cut (\"Introducing...\" over the zoom into the reveal)"
               }
             }
+          },
+          "transitionFrames": {
+            "type": "integer",
+            "description": "override the transition length in frames (defaults come from the table in voice-timeline.ts / src/script.ts)"
+          },
+          "zoomKeys": {
+            "type": "array",
+            "description": "footage framing. One entry per shot: the camera does not move inside a shot",
+            "items": {
+              "type": "object",
+              "properties": {
+                "t": {
+                  "type": "number"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "scale": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "clickPoints": {
+            "type": "array",
+            "description": "click-ring callouts in composition seconds and 0-1 footage coordinates, from <take>.events.json",
+            "items": {
+              "type": "object",
+              "properties": {
+                "t": {
+                  "type": "number"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "clicks": {
+            "type": "array",
+            "description": "composition seconds of footage clicks for click SFX (muted automatically under voice)",
+            "items": {
+              "type": "number"
+            }
+          },
+          "glitchAt": {
+            "type": "array",
+            "description": "composition seconds of glitch flickers, pain footage only",
+            "items": {
+              "type": "number"
+            }
+          },
+          "pain": {
+            "type": "boolean",
+            "description": "desaturate and vignette the footage (the old way)"
           }
         }
       }
     },
     "narration": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "voiceId": {
       "type": "string",
