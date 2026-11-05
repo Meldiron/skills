@@ -25,7 +25,7 @@ Out of scope:      things we must not imply it does
 Tone:              calm / playful / punchy (default: calm and confident)
 Narration:         yes / no. Voiceover via ElevenLabs, one line per scene (default: no for X-first clips, yes for YouTube and launch pages)
 Length:            default 60s, allowed 45-75s
-Delivery:          where it will be posted (X, YouTube, docs page, launch page). Affects aspect ratio and captions
+Delivery:          Discord by default (free upload limit 20 MB; ask if the poster has Nitro or a boosted server). Also X, YouTube, docs page, launch page. Affects size, aspect ratio and captions
 ```
 
 ## Questions worth asking even when a PR exists

@@ -134,12 +134,27 @@ Call these at module top level in `theme.ts` so every scene shares them. Remotio
 - `@remotion/animation-utils` `interpolateStyles` and `makeTransform` to avoid string-building transforms.
 - `@remotion/zod-types` `zColor()` for theme props in the Studio.
 
-## Rendering
+## Rendering and delivery targets
+
+The primary delivery target is **Discord**: launch channels, the community server, internal announcements. Discord plays mp4 inline only when the file is under the upload limit, and the limit depends on who uploads: 20 MB for a free account, 50 MB with Nitro Basic or in a server boosted to level 2, 100 MB at level 3 (as of November 2026; check the limit the app shows when attaching). A 60-second 1080p render at CRF 18 is 40-80 MB, so a plain render will not post. Always produce the Discord file:
+
+```bash
+npx remotion render Trailer out/trailer.mp4 --codec h264 --crf 18     # master
+scripts/render-discord.sh out/trailer.mp4                              # -> out/trailer-discord.mp4, under 19 MB
+scripts/render-discord.sh out/trailer.mp4 48                           # for a boosted server or Nitro uploader
+```
+
+The script does a two-pass H.264 encode sized to the budget, 1080p when the budget allows at least 3.2 Mbit/s of video and 720p otherwise, AAC 128k, `+faststart` so Discord's player starts before the download finishes. UI footage with flat colours compresses well; 720p at 2 Mbit/s looks fine on a Discord embed, which is at most about 800px wide anyway. If the file still looks soft, cut length before raising bitrate.
+
+Discord uses the first frame as the preview image. Frame 0 must already show the Appwrite mark on the brand background, not a blank frame that the logo animates into. Keep the mark at full opacity from frame 0 and animate the wordmark and glow around it.
+
+Other targets, when asked: X accepts up to 512 MB and 140 seconds, render 1080p at CRF 20. YouTube wants the master. Website embeds want 720p at CRF 23 with `--muted` plus a poster PNG.
+
 
 ```bash
 npx remotion studio                                   # preview, scrub, edit props
 npx remotion render Trailer out/trailer.mp4 --codec h264 --crf 18
-npx remotion render Trailer out/trailer-x.mp4 --codec h264 --crf 20 --scale 0.666   # 1280x720 for X/Discord
+npx remotion render Trailer out/trailer-x.mp4 --codec h264 --crf 20   # X / YouTube cut if different from master
 npx remotion still Trailer out/thumb.png --frame 45    # thumbnail from the intro hold
 ```
 

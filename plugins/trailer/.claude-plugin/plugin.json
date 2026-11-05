@@ -1,6 +1,6 @@
 {
   "name": "trailer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Produce ~60s product feature trailers with Remotion, headless-browser recordings and Appwrite Console styling.",
   "author": {
     "name": "Matej Ba\u010do"

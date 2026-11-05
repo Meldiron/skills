@@ -6,7 +6,7 @@ All layouts use the tokens in `design-tokens.md`: Console background, 1px border
 
 ## Layouts
 
-**logo-sting** (intro, 2-3s). Brand background. Mark enters first (draw-on via `evolvePath`, or scale from 0.6 with `springs.soft`, or slide up through a mask), wordmark follows 8 frames later. A faint radial glow behind the mark, pink at 8-12% opacity, drifting. Frame 45 (1.5s) must be a complete logo on a clean background: that is the thumbnail. Variants: mark centred then slides left to make room for the wordmark; mark alone on pink `#FD366E` with white mark, then dip to the dark theme; the mark drawn as a single stroke.
+**logo-sting** (intro, 2-3s). Brand background. The mark is fully visible at frame 0 (it is the Discord preview frame); it may then breathe, slide, or gain a glow, and the wordmark follows 8 frames later (slide out from behind the mark, stagger letters, or mask-reveal). A faint radial glow behind the mark, pink at 8-12% opacity, drifting. Frame 45 (1.5s) must be a complete logo on a clean background: that is the thumbnail. Variants: mark centred then slides left to make room for the wordmark; white mark alone on pink `#FD366E`, then dip to the dark theme; mark static while a pink glow blooms behind it and the wordmark wipes in. The draw-on stroke variant only works if the mark is drawn in a muted colour first and fills to pink, so frame 0 is still a logo.
 
 **hero-center** (reveal, payoff). One headline, 96-128px, centred, optional 32-40px line below in muted foreground. The largest motion of the video happens here. Keep at least 20% of the frame empty on every side.
 
